@@ -1,10 +1,12 @@
 package ru.nexgen.botnotifier.telegram;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.nexgen.botnotifier.configuration.properties.TelegramProperties;
+import ru.nexgen.botnotifier.services.IncomingTelegramMsgHandler;
 
 import java.util.List;
 
@@ -16,6 +18,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TelegramNotifierBot extends TelegramLongPollingBot {
     private final TelegramProperties properties;
+    @Setter
+    private IncomingTelegramMsgHandler incomingTelegramMsgHandler;
 
     @Override
     public void onUpdatesReceived(List<Update> updates) {
@@ -24,7 +28,8 @@ public class TelegramNotifierBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        log.info(update.toString());
+        log.debug(update.toString());
+        incomingTelegramMsgHandler.handle(update);
     }
 
     @Override
