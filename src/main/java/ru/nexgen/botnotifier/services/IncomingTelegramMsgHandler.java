@@ -22,7 +22,7 @@ public class IncomingTelegramMsgHandler {
         log.info("Update: {}", update);
 
         if (update.getMessage().getText().equalsIgnoreCase("Hello")) {
-            msgSender.send("Hello, " + update.getMessage().getFrom().getUserName() + "!", update.getMessage().getChatId());
+            msgSender.send("Hello, @" + update.getMessage().getFrom().getUserName() + "!", update.getMessage().getChatId());
         } else {
             Map<String, String> buttons = new HashMap<>();
             buttons.put("1", "1");
