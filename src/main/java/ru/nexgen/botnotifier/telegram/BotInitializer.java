@@ -27,6 +27,9 @@ public class BotInitializer {
     @PostConstruct
     public void init() {
         log.info("-------- Try to start bot --------");
+        if (properties.isWithProxy()) {
+            useProxy();
+        }
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
 
@@ -34,10 +37,17 @@ public class BotInitializer {
         try {
             telegramBotsApi.registerBot(bot);
         } catch (TelegramApiRequestException e) {
-            log.error("Can't init bot api: {}", e.getLocalizedMessage());
+            e.printStackTrace();
         }
 
         msgSender.setPlatformSender(bot);
         bot.setIncomingTelegramMsgHandler(msgHandler);
+    }
+
+    private void useProxy() {
+        log.info("Set up proxy: {}, {}", properties.getSocksProxyHost(), properties.getSocksProxyPort());
+        System.getProperties().put("proxySet", "true");
+        System.getProperties().put("socksProxyHost", properties.getSocksProxyHost());
+        System.getProperties().put("socksProxyPort", properties.getSocksProxyPort());
     }
 }

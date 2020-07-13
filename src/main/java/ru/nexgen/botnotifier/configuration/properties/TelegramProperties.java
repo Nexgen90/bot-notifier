@@ -21,4 +21,8 @@ public class TelegramProperties {
     private String botUserName;
     private String chatId;
 
+    private boolean withProxy;
+    private String socksProxyHost;
+    private Integer socksProxyPort;
+
 }
