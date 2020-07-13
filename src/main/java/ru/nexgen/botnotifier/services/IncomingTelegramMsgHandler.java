@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.nexgen.botnotifier.services.handlers.MessageHandler;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by nikolay.mikutskiy
@@ -16,20 +16,12 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class IncomingTelegramMsgHandler {
-    private final MsgSender msgSender;
+    private final List<MessageHandler> msgHandlers;
 
     public void handle(Update update) {
         log.info("Update: {}", update);
-
-        if (update.getMessage().getText().equalsIgnoreCase("Hello")) {
-            msgSender.send("Hello, @" + update.getMessage().getFrom().getUserName() + "!", update.getMessage().getChatId());
-        } else {
-            Map<String, String> buttons = new HashMap<>();
-            buttons.put("1", "1");
-            buttons.put("2", "2");
-            buttons.put("3", "3");
-            msgSender.sendWithInlineButtons(buttons, "Выбери число:", update.getMessage().getChatId()   );
-        }
-
+        msgHandlers.stream()
+                .filter(m -> m.isValid(update))
+                .forEach(m -> m.handle(update));
     }
 }
