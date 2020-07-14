@@ -20,11 +20,8 @@ public class HelloHandler implements MessageHandler {
 
     @Override
     public boolean isValid(Update receivedMessage) {
-        if (receivedMessage.hasMessage() && receivedMessage.getMessage().hasText()
-                && receivedMessage.getMessage().getText().contains("Hello")) {
-            return true;
-        }
-        return false;
+        return receivedMessage.hasMessage() && receivedMessage.getMessage().hasText()
+                && receivedMessage.getMessage().getText().contains("Hello");
     }
 
     @Override
