@@ -15,13 +15,9 @@ public class AddedNewUserHandler implements MessageHandler {
 
     @Override
     public boolean isValid(Update receivedMessage) {
-        if (receivedMessage.hasMessage()
+        return receivedMessage.hasMessage()
                 && receivedMessage.getMessage().getNewChatMembers() != null
-                && receivedMessage.getMessage().getNewChatMembers().size() > 0) {
-            return true;
-        }
-
-        return false;
+                && receivedMessage.getMessage().getNewChatMembers().size() > 0;
     }
 
     @Override

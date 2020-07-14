@@ -20,10 +20,8 @@ public class HelloCallbackHandler implements MessageHandler {
 
     @Override
     public boolean isValid(Update receivedMessage) {
-        if (receivedMessage.hasCallbackQuery() && receivedMessage.getCallbackQuery().getData().startsWith(HELLO_PREFIX)) {
-            return true;
-        }
-        return false;
+        return receivedMessage.hasCallbackQuery()
+                && receivedMessage.getCallbackQuery().getData().startsWith(HELLO_PREFIX);
     }
 
     @Override
