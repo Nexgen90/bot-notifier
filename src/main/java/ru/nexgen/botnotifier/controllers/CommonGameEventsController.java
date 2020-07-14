@@ -25,9 +25,10 @@ public class CommonGameEventsController {
     private final MsgSender msgSender;
     private final TemplatesService templatesService;
 
+    //todo: позже заменить походом в БД
     private static List<Long> chatIds = new ArrayList<>();
     static {
-        chatIds.add(330432380L);
+        chatIds.add(-492181167L);//chat=Chat{id=-492181167, type='group', title='Test group',
         chatIds.add(96553356L);
     }
 
