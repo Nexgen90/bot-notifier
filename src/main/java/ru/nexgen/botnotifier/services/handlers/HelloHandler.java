@@ -26,7 +26,7 @@ public class HelloHandler implements MessageHandler {
 
     @Override
     public void handle(Update receivedMessage) {
-        if (receivedMessage.getMessage().getText().equalsIgnoreCase("Hello")) {
+        if (receivedMessage.getMessage().getText().equalsIgnoreCase("/bot Hello")) {
             msgSender.send("Hello, @" + receivedMessage.getMessage().getFrom().getUserName() + "!", receivedMessage.getMessage().getChatId());
         } else {
             Map<String, String> buttons = new HashMap<>();
