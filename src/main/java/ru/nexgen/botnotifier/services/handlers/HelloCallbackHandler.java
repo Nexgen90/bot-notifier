@@ -34,10 +34,10 @@ public class HelloCallbackHandler implements MessageHandler {
 
         switch (answerId) {
             case 1:
-                msgSender.send("You peek <b>" + answerId + "</b> value!", receivedMessage.getCallbackQuery().getMessage().getChatId());
+                msgSender.send("@" + receivedMessage.getCallbackQuery().getFrom().getUserName() + " peek <b>" + answerId + "</b> value!", receivedMessage.getCallbackQuery().getMessage().getChatId());
                 break;
             case 2:
-                msgSender.send("You peek <b>" + answerId + "</b> value!", receivedMessage.getCallbackQuery().getMessage().getChatId());
+                msgSender.send("@" + receivedMessage.getCallbackQuery().getFrom().getUserName() + " peek <b>" + answerId + "</b> value!", receivedMessage.getCallbackQuery().getMessage().getChatId());
                 break;
             case 3:
                 msgSender.editInLineButton(receivedMessage, "<i>Отменено</i>");

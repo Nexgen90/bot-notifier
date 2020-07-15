@@ -30,10 +30,10 @@ public class AddedNewUserHandler implements MessageHandler {
     public void handle(Update receivedMessage) {
         for (User newChatMember : receivedMessage.getMessage().getNewChatMembers()) {
             if (newChatMember.getBot()) {
-                log.info("New bot {} is added in group {}", newChatMember.getId(), receivedMessage.getMessage().getFrom().getId());
+                log.info("New bot {} is added in group {}", newChatMember.getId(), receivedMessage.getMessage().getChatId());
                 return;
             }
-            log.info("New user {} is added in group {}", newChatMember.getId(), receivedMessage.getMessage().getFrom().getId());
+            log.info("New user {} is added in group {}", newChatMember.getId(), receivedMessage.getMessage().getChatId());
 
             if (!gameApiService.isGamer(newChatMember.getId())) {
                 msgSender.send("Внимание! @" + newChatMember.getUserName() + " не является игроком!", receivedMessage.getMessage().getChatId());

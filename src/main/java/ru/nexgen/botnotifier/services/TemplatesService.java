@@ -8,9 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.Map;
 
 /**
@@ -36,6 +34,16 @@ public class TemplatesService {
     }
 
     private String getTemplateById(int id) {
-        return "captured_railway_station.ftl";
+        switch (id) {
+            case 1:
+                return "captured_railway_station.ftl";
+            case 2:
+                return "killed_raid_boss.ftl";
+            case 3:
+                return "killed_raid_boss_for_clan.ftl";
+            default:
+                log.error("Can't find template by id:{}", id);
+                return "default.ftl";
+        }
     }
 }
