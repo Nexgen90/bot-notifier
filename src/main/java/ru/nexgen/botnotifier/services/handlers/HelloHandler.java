@@ -20,16 +20,13 @@ public class HelloHandler implements MessageHandler {
 
     @Override
     public boolean isValid(Update receivedMessage) {
-        if (receivedMessage.hasMessage() && receivedMessage.getMessage().hasText()
-                && receivedMessage.getMessage().getText().contains("Hello")) {
-            return true;
-        }
-        return false;
+        return receivedMessage.hasMessage() && receivedMessage.getMessage().hasText()
+                && receivedMessage.getMessage().getText().contains("Hello");
     }
 
     @Override
     public void handle(Update receivedMessage) {
-        if (receivedMessage.getMessage().getText().equalsIgnoreCase("Hello")) {
+        if (receivedMessage.getMessage().getText().equalsIgnoreCase("/bot Hello")) {
             msgSender.send("Hello, @" + receivedMessage.getMessage().getFrom().getUserName() + "!", receivedMessage.getMessage().getChatId());
         } else {
             Map<String, String> buttons = new HashMap<>();

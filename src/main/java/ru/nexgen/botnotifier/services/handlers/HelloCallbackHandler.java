@@ -20,26 +20,30 @@ public class HelloCallbackHandler implements MessageHandler {
 
     @Override
     public boolean isValid(Update receivedMessage) {
-        if (receivedMessage.hasCallbackQuery() && receivedMessage.getCallbackQuery().getData().startsWith(HELLO_PREFIX)) {
-            return true;
-        }
-        return false;
+        return receivedMessage.hasCallbackQuery()
+                && receivedMessage.getCallbackQuery().getData().startsWith(HELLO_PREFIX);
     }
 
     @Override
     public void handle(Update receivedMessage) {
         String playerCommand = receivedMessage.getCallbackQuery().getData();
-        log.info("Received player callback: " + playerCommand);
+        log.info("Received player " + receivedMessage.getCallbackQuery().getFrom().getId() + " callback: " + playerCommand);
 
         String[] command = playerCommand.split(":");
         int answerId = Integer.parseInt(command[1]);
 
+        String tgUserName = receivedMessage.getCallbackQuery().getFrom().getUserName();
+        if (tgUserName == null) {
+            tgUserName = receivedMessage.getCallbackQuery().getFrom().getFirstName();
+        } else {
+            tgUserName = "@" + tgUserName;
+        }
         switch (answerId) {
             case 1:
-                msgSender.send("You peek <b>" + answerId + "</b> value!", receivedMessage.getCallbackQuery().getMessage().getChatId());
+                msgSender.send(tgUserName + " peek <b>" + answerId + "</b> value!", receivedMessage.getCallbackQuery().getMessage().getChatId());
                 break;
             case 2:
-                msgSender.send("You peek <b>" + answerId + "</b> value!", receivedMessage.getCallbackQuery().getMessage().getChatId());
+                msgSender.send(tgUserName + " peek <b>" + answerId + "</b> value!", receivedMessage.getCallbackQuery().getMessage().getChatId());
                 break;
             case 3:
                 msgSender.editInLineButton(receivedMessage, "<i>Отменено</i>");
