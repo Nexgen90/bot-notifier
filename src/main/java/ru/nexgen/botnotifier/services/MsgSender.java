@@ -10,7 +10,6 @@ import java.util.Map;
  */
 public interface MsgSender {
     void setPlatformSender(Object bot);
-
     void send(String message, Long chatId);
     void sendWithInlineButtons(Map<String, String> buttons, String headerText, Long chatId);
     void editInLineButton(Update update, String text);
