@@ -12,5 +12,4 @@ public class BotNotifierApplication {
         SpringApplication.run(BotNotifierApplication.class, args);
         log.info("BotNotifier has started");
     }
-
 }
