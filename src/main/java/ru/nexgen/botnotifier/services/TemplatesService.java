@@ -41,6 +41,8 @@ public class TemplatesService {
                 return "killed_raid_boss.ftl";
             case 3:
                 return "killed_raid_boss_for_clan.ftl";
+            case 4:
+                return "raid_time_information.ftl";
             default:
                 log.error("Can't find template by id:{}", id);
                 return "default.ftl";

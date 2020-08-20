@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.nexgen.botnotifier.services.MsgSender;
+import ru.nexgen.botnotifier.services.TemplatesService;
 
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by oleg.kurejko
@@ -16,8 +19,13 @@ import java.time.temporal.ChronoUnit;
 @Component
 @RequiredArgsConstructor
 public class RaidTimeHandler implements MessageHandler {
+    public static final String NEXT_RAID_TIME = "nextRaidTime";
+    public static final String NEXT_DURATION = "nextDuration";
+    public static final String ANOTHER_RAID_TIME = "anotherRaidTime";
+    public static final String ANOTHER_DURATION = "anotherDuration";
+    public static final int TEMPLATE_ID = 4;
     private final MsgSender msgSender;
-    public static final String RECENT_RAIDS = "Ближайшие события:";
+    private final TemplatesService templatesService;
 
     @Override
     public boolean isValid(Update receivedMessage) {
@@ -27,6 +35,8 @@ public class RaidTimeHandler implements MessageHandler {
 
     @Override
     public void handle(Update receivedMessage) {
+        Map<String, String> parameters = new HashMap<>();
+
         LocalTime currentTime = LocalTime.now();
         LocalTime raid5 = LocalTime.of(5, 30);
         LocalTime raid8 = LocalTime.of(8, 30);
@@ -41,27 +51,42 @@ public class RaidTimeHandler implements MessageHandler {
         String formattedDuration23 = durationFormatting(currentTime, raid23);
 
         if (currentTime.isAfter(raid5) && currentTime.isBefore(raid8)) {
-            msgSender.send(RECENT_RAIDS + raidTime(raid8) + formattedDuration8 +
-                    raidTime(raid12) + formattedDuration12, receivedMessage.getMessage().getChatId());
+            parameters.put(NEXT_RAID_TIME, raidTime(raid8));
+            parameters.put(NEXT_DURATION, formattedDuration8);
+            parameters.put(ANOTHER_RAID_TIME, raidTime(raid12));
+            parameters.put(ANOTHER_DURATION, formattedDuration12);
+            msgSender.send(templatesService.fillTemplate(TEMPLATE_ID, parameters), receivedMessage.getMessage().getChatId());
         }
         if (currentTime.isAfter(raid8) && currentTime.isBefore(raid12)) {
-            msgSender.send(RECENT_RAIDS + raidTime(raid12) + formattedDuration12 +
-                    raidTime(raid17) + formattedDuration17, receivedMessage.getMessage().getChatId());
+            parameters.put(NEXT_RAID_TIME, raidTime(raid12));
+            parameters.put(NEXT_DURATION, formattedDuration12);
+            parameters.put(ANOTHER_RAID_TIME, raidTime(raid17));
+            parameters.put(ANOTHER_DURATION, formattedDuration17);
+            msgSender.send(templatesService.fillTemplate(TEMPLATE_ID, parameters), receivedMessage.getMessage().getChatId());
         }
         if (currentTime.isAfter(raid12) && currentTime.isBefore(raid17)) {
-            msgSender.send(RECENT_RAIDS + raidTime(raid17) + formattedDuration17 +
-                    raidTime(raid23) + formattedDuration23, receivedMessage.getMessage().getChatId());
+            parameters.put(NEXT_RAID_TIME, raidTime(raid17));
+            parameters.put(NEXT_DURATION, formattedDuration17);
+            parameters.put(ANOTHER_RAID_TIME, raidTime(raid23));
+            parameters.put(ANOTHER_DURATION, formattedDuration23);
+            msgSender.send(templatesService.fillTemplate(TEMPLATE_ID, parameters), receivedMessage.getMessage().getChatId());
         }
         if (currentTime.isAfter(raid17) && currentTime.isBefore(raid23)) {
-            msgSender.send(RECENT_RAIDS + raidTime(raid23) + formattedDuration23 +
-                    raidTime(raid5) + formattedDuration5, receivedMessage.getMessage().getChatId());
+            parameters.put(NEXT_RAID_TIME, raidTime(raid23));
+            parameters.put(NEXT_DURATION, formattedDuration23);
+            parameters.put(ANOTHER_RAID_TIME, raidTime(raid5));
+            parameters.put(ANOTHER_DURATION, formattedDuration5);
+            msgSender.send(templatesService.fillTemplate(TEMPLATE_ID, parameters), receivedMessage.getMessage().getChatId());
         }
-        if ((currentTime.isAfter(LocalTime.MIDNIGHT) && currentTime.isBefore(raid5)) || (currentTime.isAfter(raid23) && currentTime.isBefore(LocalTime.MIDNIGHT))) {
-            msgSender.send(RECENT_RAIDS + raidTime(raid5) + formattedDuration5 +
-                    raidTime(raid8) + formattedDuration8, receivedMessage.getMessage().getChatId());
+        if ((currentTime.isAfter(LocalTime.MIDNIGHT) && currentTime.isBefore(raid5))
+                || (currentTime.isAfter(raid23) && currentTime.isBefore(LocalTime.MIDNIGHT))) {
+            parameters.put(NEXT_RAID_TIME, raidTime(raid5));
+            parameters.put(NEXT_DURATION, formattedDuration5);
+            parameters.put(ANOTHER_RAID_TIME, raidTime(raid8));
+            parameters.put(ANOTHER_DURATION, formattedDuration8);
+            msgSender.send(templatesService.fillTemplate(TEMPLATE_ID, parameters), receivedMessage.getMessage().getChatId());
         }
     }
-
 
     private static String durationFormatting(LocalTime start, LocalTime end) {
         Duration diff = Duration.between(start, end);
@@ -75,8 +100,6 @@ public class RaidTimeHandler implements MessageHandler {
     }
 
     private static String raidTime(LocalTime raid) {
-        return String.format("\nРейд [%d:%02d] начнётся через: ",
-                raid.getHour(),
-                raid.getMinute());
+        return String.format("%d:%02d", raid.getHour(), raid.getMinute());
     }
 }
