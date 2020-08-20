@@ -27,42 +27,41 @@ public class RaidTimeHandler implements MessageHandler {
 
     @Override
     public void handle(Update receivedMessage) {
-        if (receivedMessage.getMessage().getText().startsWith(("/raid_time"))) {
-            LocalTime currentTime = LocalTime.now();
-            LocalTime raid5 = LocalTime.of(5, 30);
-            LocalTime raid8 = LocalTime.of(8, 30);
-            LocalTime raid12 = LocalTime.of(12, 30);
-            LocalTime raid17 = LocalTime.of(17, 30);
-            LocalTime raid23 = LocalTime.of(23, 30);
+        LocalTime currentTime = LocalTime.now();
+        LocalTime raid5 = LocalTime.of(5, 30);
+        LocalTime raid8 = LocalTime.of(8, 30);
+        LocalTime raid12 = LocalTime.of(12, 30);
+        LocalTime raid17 = LocalTime.of(17, 30);
+        LocalTime raid23 = LocalTime.of(23, 30);
 
-            String formattedDuration5 = durationFormatting(currentTime, raid5);
-            String formattedDuration8 = durationFormatting(currentTime, raid8);
-            String formattedDuration12 = durationFormatting(currentTime, raid12);
-            String formattedDuration17 = durationFormatting(currentTime, raid17);
-            String formattedDuration23 = durationFormatting(currentTime, raid23);
+        String formattedDuration5 = durationFormatting(currentTime, raid5);
+        String formattedDuration8 = durationFormatting(currentTime, raid8);
+        String formattedDuration12 = durationFormatting(currentTime, raid12);
+        String formattedDuration17 = durationFormatting(currentTime, raid17);
+        String formattedDuration23 = durationFormatting(currentTime, raid23);
 
-            if (currentTime.isAfter(raid5) && currentTime.isBefore(raid8)) {
-                msgSender.send(RECENT_RAIDS + raidTime(raid8) + formattedDuration8 +
-                        raidTime(raid12) + formattedDuration12, receivedMessage.getMessage().getChatId());
-            }
-            if (currentTime.isAfter(raid8) && currentTime.isBefore(raid12)) {
-                msgSender.send(RECENT_RAIDS + raidTime(raid12) + formattedDuration12 +
-                        raidTime(raid17) + formattedDuration17, receivedMessage.getMessage().getChatId());
-            }
-            if (currentTime.isAfter(raid12) && currentTime.isBefore(raid17)) {
-                msgSender.send(RECENT_RAIDS + raidTime(raid17) + formattedDuration17 +
-                        raidTime(raid23) + formattedDuration23, receivedMessage.getMessage().getChatId());
-            }
-            if (currentTime.isAfter(raid17) && currentTime.isBefore(raid23)) {
-                msgSender.send(RECENT_RAIDS + raidTime(raid23) + formattedDuration23 +
-                        raidTime(raid5) + formattedDuration5, receivedMessage.getMessage().getChatId());
-            }
-            if ((currentTime.isAfter(LocalTime.MIDNIGHT) && currentTime.isBefore(raid5)) || (currentTime.isAfter(raid23) && currentTime.isBefore(LocalTime.MIDNIGHT))) {
-                msgSender.send(RECENT_RAIDS + raidTime(raid5) + formattedDuration5 +
-                        raidTime(raid8) + formattedDuration8, receivedMessage.getMessage().getChatId());
-            }
+        if (currentTime.isAfter(raid5) && currentTime.isBefore(raid8)) {
+            msgSender.send(RECENT_RAIDS + raidTime(raid8) + formattedDuration8 +
+                    raidTime(raid12) + formattedDuration12, receivedMessage.getMessage().getChatId());
+        }
+        if (currentTime.isAfter(raid8) && currentTime.isBefore(raid12)) {
+            msgSender.send(RECENT_RAIDS + raidTime(raid12) + formattedDuration12 +
+                    raidTime(raid17) + formattedDuration17, receivedMessage.getMessage().getChatId());
+        }
+        if (currentTime.isAfter(raid12) && currentTime.isBefore(raid17)) {
+            msgSender.send(RECENT_RAIDS + raidTime(raid17) + formattedDuration17 +
+                    raidTime(raid23) + formattedDuration23, receivedMessage.getMessage().getChatId());
+        }
+        if (currentTime.isAfter(raid17) && currentTime.isBefore(raid23)) {
+            msgSender.send(RECENT_RAIDS + raidTime(raid23) + formattedDuration23 +
+                    raidTime(raid5) + formattedDuration5, receivedMessage.getMessage().getChatId());
+        }
+        if ((currentTime.isAfter(LocalTime.MIDNIGHT) && currentTime.isBefore(raid5)) || (currentTime.isAfter(raid23) && currentTime.isBefore(LocalTime.MIDNIGHT))) {
+            msgSender.send(RECENT_RAIDS + raidTime(raid5) + formattedDuration5 +
+                    raidTime(raid8) + formattedDuration8, receivedMessage.getMessage().getChatId());
         }
     }
+
 
     private static String durationFormatting(LocalTime start, LocalTime end) {
         Duration diff = Duration.between(start, end);
@@ -75,7 +74,7 @@ public class RaidTimeHandler implements MessageHandler {
                 diff.toSecondsPart());
     }
 
-    private static String raidTime(LocalTime raid){
+    private static String raidTime(LocalTime raid) {
         return String.format("\nРейд [%d:%02d] начнётся через: ",
                 raid.getHour(),
                 raid.getMinute());
