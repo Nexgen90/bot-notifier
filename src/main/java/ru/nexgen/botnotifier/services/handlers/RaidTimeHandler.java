@@ -3,14 +3,17 @@ package ru.nexgen.botnotifier.services.handlers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.nexgen.botnotifier.configuration.properties.GameServerProperties;
 import ru.nexgen.botnotifier.services.MsgSender;
 import ru.nexgen.botnotifier.services.TemplatesService;
 
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 /**
  * Created by oleg.kurejko
@@ -24,6 +27,7 @@ public class RaidTimeHandler implements MessageHandler {
     public static final String ANOTHER_RAID_TIME = "anotherRaidTime";
     public static final String ANOTHER_DURATION = "anotherDuration";
     public static final int TEMPLATE_ID = 4;
+    private final GameServerProperties properties;
     private final MsgSender msgSender;
     private final TemplatesService templatesService;
 
@@ -49,6 +53,15 @@ public class RaidTimeHandler implements MessageHandler {
         String formattedDuration12 = durationFormatting(currentTime, raid12);
         String formattedDuration17 = durationFormatting(currentTime, raid17);
         String formattedDuration23 = durationFormatting(currentTime, raid23);
+
+        //for life-debug
+        List<Duration> raidTimes = properties.getRaidTimes();
+        Collections.sort(raidTimes);
+        StringBuilder text = new StringBuilder();
+        properties.getRaidTimes().forEach(t -> text.append(t).append("\n"));
+        msgSender.send(text.toString(), receivedMessage.getMessage().getChatId());
+        //for life-debug
+
 
         if (currentTime.isAfter(raid5) && currentTime.isBefore(raid8)) {
             parameters.put(NEXT_RAID_TIME, raidTime(raid8));
