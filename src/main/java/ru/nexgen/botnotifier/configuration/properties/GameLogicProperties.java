@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
+
 /**
  * Created by nikolay.mikutskiy
  * Date: 15.07.2020
@@ -14,8 +16,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @Configuration
 @PropertySource("classpath:application.properties")
-@ConfigurationProperties(prefix = "game-server")
-public class GameServerProperties {
-    private String host;
-    private String port;
+@ConfigurationProperties(prefix = "game-logic")
+public class GameLogicProperties {
+    private List<String> raidTimes;
 }
