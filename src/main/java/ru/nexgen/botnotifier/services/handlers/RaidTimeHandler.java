@@ -28,7 +28,7 @@ public class RaidTimeHandler implements MessageHandler {
     public static final String NEXT_DURATION = "nextDuration";
     public static final String ANOTHER_RAID_TIME = "anotherRaidTime";
     public static final String ANOTHER_DURATION = "anotherDuration";
-    public static final int TEMPLATE_ID = 4;
+    public static final int RAID_TIME_TEMPLATE_ID = 4;
     private final GameLogicProperties properties;
     private final MsgSender msgSender;
     private final TemplatesService templatesService;
@@ -44,7 +44,6 @@ public class RaidTimeHandler implements MessageHandler {
         Map<String, String> parameters = new HashMap<>();
         LocalTime currentTime = LocalTime.now();
         List<LocalTime> raidTimes = properties.getRaidTimes().stream()
-                .peek(System.out::println)
                 .map(text -> LocalTime.parse(text, DateTimeFormatter.ofPattern("HH:mm:ss")))
                 .collect(Collectors.toList());
 
@@ -54,7 +53,7 @@ public class RaidTimeHandler implements MessageHandler {
         parameters.put(NEXT_DURATION, getDurationString(currentTime, result.getNext()));
         parameters.put(ANOTHER_RAID_TIME, getRaidTimeString(result.getOther()));
         parameters.put(ANOTHER_DURATION, getDurationString(currentTime, result.getOther()));
-        msgSender.send(templatesService.fillTemplate(TEMPLATE_ID, parameters), receivedMessage.getMessage().getChatId());
+        msgSender.send(templatesService.fillTemplate(RAID_TIME_TEMPLATE_ID, parameters), receivedMessage.getMessage().getChatId());
     }
 
     private Pair extractTwoNearestRaidTimes(List<LocalTime> raidTimes, LocalTime currentTime) {
@@ -96,7 +95,7 @@ public class RaidTimeHandler implements MessageHandler {
     }
 
     @Data
-    static class Pair {
+    private static class Pair {
         private final LocalTime next;
         private final LocalTime other;
     }
