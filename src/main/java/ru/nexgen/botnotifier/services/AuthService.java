@@ -33,8 +33,8 @@ public class AuthService {
             }
         }
 
-        dbService.getChatsMapper().updateLastCallTime();
-        return  chat.isActive();
+        dbService.getChatsMapper().updateLastCallTime(chat.getChatId());
+        return chat.isActive();
     }
 
     private Chat createOrGetChat(Update update) {

@@ -49,5 +49,11 @@ public class CommonGameEventsController {
                 msgSender.send(templatesService.fillTemplate(templateId, parameters), id));
     }
 
+    @PostMapping(value = "/ban/chat/{id}/minutes/5")
+    public String addBanTime(@PathVariable Long id) {
+        log.info("Get post-request /ban/chat/{}/minutes/5", id);
 
+        dbService.getChatsMapper().updateBanTime(id);
+        return "OK";
+    }
 }

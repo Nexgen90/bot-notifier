@@ -22,20 +22,19 @@ public interface ChatsMapper {
             "FROM chats_id WHERE chat_id = #{chatId}")
     Chat getChat(@Param("chatId") Long chatId);
 
-    @Update("UPDATE chats_id SET is_active = false WHERE chat_id = #{chatId}")
+    @Update("UPDATE chats_id SET is_active = false, stop_time = (now() at time zone 'Europe/Moscow') WHERE chat_id = #{chatId}")
     void removeChat(@Param("chatId") Long chatId);
 
     @Update("UPDATE chats_id SET is_active = #{isActive} WHERE chat_id = #{chatId}")
     void updateChatStatus(@Param("chatId") Long chatId,
                           @Param("isActive") boolean isActive);
 
-    @Update("UPDATE chats_id SET ban_time = (now() at time zone 'Europe/Moscow') + interval '#{banMinutes} minutes' WHERE chat_id = #{chatId}")
-    void updateBanTime(@Param("chatId") Long chatId,
-                       @Param("banMinutes") Integer banMinutes);
+    @Update("UPDATE chats_id SET ban_time = (now() at time zone 'Europe/Moscow') + interval '5 minutes' WHERE chat_id = #{chatId}")
+    void updateBanTime(@Param("chatId") Long chatId);
 
     @Select("SELECT chat_id FROM chats_id WHERE is_active = true")
     List<Long> getAllActiveChatIds();
 
     @Update("UPDATE chats_id SET last_call_time = (now() at time zone 'Europe/Moscow') WHERE chat_id = #{chatId}")
-    void updateLastCallTime();
+    void updateLastCallTime(@Param("chatId") Long chatId);
 }
