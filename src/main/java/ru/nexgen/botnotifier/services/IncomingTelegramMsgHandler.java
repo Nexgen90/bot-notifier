@@ -16,10 +16,18 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class IncomingTelegramMsgHandler {
+    private final DbService dbService;
+    private final AuthService authService;
     private final List<MessageHandler> msgHandlers;
 
     public void handle(Update update) {
         log.info("Update: {}", update);
+
+        if (!authService.isValid(update)) {
+            log.info("Request {} is not valid or blocked", update.getUpdateId());
+            return;
+        }
+
         msgHandlers.stream()
                 .filter(m -> m.isValid(update))
                 .forEach(m -> m.handle(update));
