@@ -8,6 +8,11 @@
         <setting name="logImpl" value="SLF4J"/>
         <setting name="jdbcTypeForNull" value="NULL" />
     </settings>
+
+    <typeHandlers>
+        <typeHandler handler="org.apache.ibatis.type.ZonedDateTimeTypeHandler"/>
+    </typeHandlers>
+
     <mappers>
         <mapper resource="mapper/ChatsMapper.xml"/>
     </mappers>

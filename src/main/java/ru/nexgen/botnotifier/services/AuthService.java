@@ -5,7 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import ru.nexgen.botnotifier.configuration.properties.TelegramProperties;
 import ru.nexgen.botnotifier.mapper.Chat;
+
+import java.time.ZonedDateTime;
+
+import static ru.nexgen.botnotifier.telegram.utils.UserNameExtractor.extractUserName;
 
 /**
  * Created by nikolay.mikutskiy
@@ -15,17 +20,20 @@ import ru.nexgen.botnotifier.mapper.Chat;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final String botName = "ZGameTestBot"; //todo: брать из протертей
+    private final TelegramProperties properties;
     private final DbService dbService;
 
     public boolean isValid(Update update) {
         Chat chat = createOrGetChat(update);
 
         if (chat.getBanTime() != null) {
-            //todo: проверка даты и времени бана
-            return false;
+            ZonedDateTime banTime = chat.getBanTime();
+            if (banTime.isAfter(ZonedDateTime.now(banTime.getZone()))) {
+                return false;
+            }
         }
 
+        dbService.getChatsMapper().updateLastCallTime();
         return  chat.isActive();
     }
 
@@ -37,21 +45,12 @@ public class AuthService {
             if (update.getMessage().getNewChatMembers() != null
                     && !update.getMessage().getNewChatMembers().isEmpty()) {
                 update.getMessage().getNewChatMembers().stream()
-                        .filter(member -> botName.equals(member.getUserName()))
+                        .filter(member -> properties.getBotUserName().equals(member.getUserName()))
                         .findFirst()
                         .ifPresent(m -> dbService.getChatsMapper()
                                 .addChat(update.getMessage().getChatId(), update.getMessage().getChat().getTitle()));
             } else {
-                String userName = update.getMessage().getFrom().getUserName(); //todo: вынести в отдельный класс
-                if (userName == null || userName.isBlank()) {
-                    userName = update.getMessage().getFrom().getFirstName();
-                }
-                if (userName == null || userName.isBlank()) {
-                    userName = update.getMessage().getFrom().getLastName();
-                }
-                if (userName == null || userName.isBlank()) {
-                    userName = update.getMessage().getFrom().getId().toString();
-                }
+                String userName = extractUserName(update);
                 dbService.getChatsMapper()
                         .addChat(update.getMessage().getChatId(), userName);
             }
@@ -60,7 +59,7 @@ public class AuthService {
 
         if (chat != null && update.getMessage().getLeftChatMember() != null) {
             User leftChatMember = update.getMessage().getLeftChatMember();
-            if ( botName.equals(leftChatMember.getUserName()) ) {
+            if ( properties.getBotUserName().equals(leftChatMember.getUserName()) ) {
                 dbService.getChatsMapper().removeChat(update.getMessage().getChatId());
             }
         }
@@ -68,7 +67,7 @@ public class AuthService {
         if (chat != null && update.getMessage().getNewChatMembers() != null
                 && !update.getMessage().getNewChatMembers().isEmpty()) {
             update.getMessage().getNewChatMembers().stream()
-                    .filter(member -> botName.equals(member.getUserName()))
+                    .filter(member -> properties.getBotUserName().equals(member.getUserName()))
                     .findFirst()
                     .ifPresent(m -> dbService.getChatsMapper()
                             .updateChatStatus(update.getMessage().getChatId(), true));

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.ZonedDateTime;
+
 /**
  * Created by nikolay.mikutskiy
  * Date: 28.08.2020
@@ -18,9 +20,9 @@ import lombok.ToString;
 public class Chat {
     private Long chatId;
     private String chatName;
-    private String startTime;
-    private String lastCallTime;
-    private String stopTime;
-    private String banTime;
+    private ZonedDateTime startTime;
+    private ZonedDateTime lastCallTime;
+    private ZonedDateTime stopTime;
+    private ZonedDateTime banTime;
     private boolean isActive;
 }

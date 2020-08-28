@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.List;
+
 @Mapper
 public interface ChatsMapper {
 
@@ -31,4 +33,9 @@ public interface ChatsMapper {
     void updateBanTime(@Param("chatId") Long chatId,
                        @Param("banMinutes") Integer banMinutes);
 
+    @Select("SELECT chat_id FROM chats_id WHERE is_active = true")
+    List<Long> getAllActiveChatIds();
+
+    @Update("UPDATE chats_id SET last_call_time = (now() at time zone 'Europe/Moscow') WHERE chat_id = #{chatId}")
+    void updateLastCallTime();
 }
