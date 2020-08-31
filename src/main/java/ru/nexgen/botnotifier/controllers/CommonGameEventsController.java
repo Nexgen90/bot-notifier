@@ -7,11 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.nexgen.botnotifier.models.requests.PushNotifyRq;
+import ru.nexgen.botnotifier.services.DbService;
 import ru.nexgen.botnotifier.services.MsgSender;
 import ru.nexgen.botnotifier.services.TemplatesService;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,15 +21,9 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 public class CommonGameEventsController {
+    private final DbService dbService;
     private final MsgSender msgSender;
     private final TemplatesService templatesService;
-
-    //todo: позже заменить походом в БД
-    private static List<Long> chatIds = new ArrayList<>();
-    static {
-        chatIds.add(-492181167L);//chat=Chat{id=-492181167, type='group', title='Test group',
-        chatIds.add(96553356L);
-    }
 
     /**
      * Пример вызова:
@@ -40,7 +33,7 @@ public class CommonGameEventsController {
     public void pushNotification(@RequestBody PushNotifyRq request) {
         log.info("Get post-request: {}", request);
 
-        chatIds.forEach(id -> msgSender.send(request.getText(), id));
+        dbService.getChatsMapper().getAllActiveChatIds().forEach(id -> msgSender.send(request.getText(), id));
     }
 
     /**
@@ -52,8 +45,15 @@ public class CommonGameEventsController {
                                          @RequestBody Map<String, String> parameters) {
         log.info("Get post-request: {}", parameters);
 
-        chatIds.forEach(id -> msgSender.send(templatesService.fillTemplate(templateId, parameters), id));
+        dbService.getChatsMapper().getAllActiveChatIds().forEach(id ->
+                msgSender.send(templatesService.fillTemplate(templateId, parameters), id));
     }
 
+    @PostMapping(value = "/ban/chat/{id}/minutes/5")
+    public String addBanTime(@PathVariable Long id) {
+        log.info("Get post-request /ban/chat/{}/minutes/5", id);
 
+        dbService.getChatsMapper().updateBanTime(id);
+        return "OK";
+    }
 }
