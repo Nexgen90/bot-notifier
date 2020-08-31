@@ -1,23 +1,23 @@
 {
-  "1": {
-    "id": 1,
-    "code": "1 км",
+  "4": {
+    "id": 4,
+    "code": "4 км",
     "name": "Окрестности лагеря",
     "fullMapImageId": "ASFASFDSA",
-    "nextLocationsId": [2]
+    "nextLocationsId": [3, 5]
   },
-  "2": {
-    "id": 2,
-    "code": "2 км",
+  "5": {
+    "id": 5,
+    "code": "5 км",
     "name": "Окрестности лагеря",
     "fullMapImageId": "ASFASFDSA",
-    "nextLocationsId": [1, 3]
+    "nextLocationsId": [4, 6]
   },
-  "3": {
-    "id": 3,
-    "code": "3 км",
+  "6": {
+    "id": 6,
+    "code": "6 км",
     "name": "Окрестности лагеря",
     "fullMapImageId": "ASFASFDSA",
-    "nextLocationsId": [2, 4]
+    "nextLocationsId": [5]
   }
 }
