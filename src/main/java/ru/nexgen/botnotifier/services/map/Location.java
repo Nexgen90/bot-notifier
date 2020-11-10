@@ -1,8 +1,7 @@
 package ru.nexgen.botnotifier.services.map;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,16 +19,16 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode(of = "id")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Location {
     private Integer id;
+    private MapType type;
     private String code;
     private String name;
     private String smallMapImageId;
     private String fullMapImageId;
 
     private List<Integer> nextLocationsId;
-
 
 }

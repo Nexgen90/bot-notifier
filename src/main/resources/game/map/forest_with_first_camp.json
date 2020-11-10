@@ -1,6 +1,7 @@
 {
   "1": {
     "id": 1,
+    "type": "SAFE_ZONE",
     "code": "1 км",
     "name": "Окрестности лагеря",
     "fullMapImageId": "ASFASFDSA",
@@ -8,6 +9,7 @@
   },
   "2": {
     "id": 2,
+    "type": "FOREST",
     "code": "2 км",
     "name": "Окрестности лагеря",
     "fullMapImageId": "ASFASFDSA",
@@ -15,6 +17,7 @@
   },
   "3": {
     "id": 3,
+    "type": "FOREST",
     "code": "3 км",
     "name": "Окрестности лагеря",
     "fullMapImageId": "ASFASFDSA",

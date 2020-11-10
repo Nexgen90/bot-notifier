@@ -21,7 +21,8 @@ public class IncomingTelegramMsgHandler {
     private final List<MessageHandler> msgHandlers;
 
     public void handle(Update update) {
-        log.info("Update: {}", update);
+        log.info("Received new message: {}", update.getUpdateId());
+        log.debug("Update: {}", update);
 
         if (!authService.isValid(update)) {
             log.info("Request {} is not valid or blocked", update.getUpdateId());

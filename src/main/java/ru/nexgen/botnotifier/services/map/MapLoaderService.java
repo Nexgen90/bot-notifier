@@ -3,13 +3,12 @@ package ru.nexgen.botnotifier.services.map;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,33 +21,40 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class MapLoader {
+public class MapLoaderService {
 
-    private String mapsFolderPath = "/Users/nikolay.mikutskiy/git/bot-notifier/src/main/resources/game/map";
+    @Value("${game.map.mapsFolderPath:#{null}}")
+    private String mapsFolderPath;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private List<File> files;
 
     @PostConstruct
-    public void init() throws IOException {
+    public void init() {
         File folder = new File(mapsFolderPath);
-        List<File> files = listFilesForFolder(folder);
+        files = listFilesForFolder(folder);
+    }
+
+    public Map<Integer, Location> loadAndGetGameMap() {
         Map<Integer, Location> map = new HashMap<>();
 
         files.forEach(f -> {
             try {
-                map.putAll(objectMapper.readValue(f, new TypeReference<HashMap<Integer, Location>>() {}));
+                map.putAll(objectMapper.readValue(f, new TypeReference<HashMap<Integer, Location>>() {
+                }));
             } catch (IOException e) {
-                log.error("Error while load map file: {}", f.getName(), e);
+                log.error("Error while loading map files: {}", f.getName(), e);
             }
         });
 
-        log.info("Map is loaded: {} locations", map.size());
+        log.info("Map is loaded: {} locations from {} files", map.size(), files.size());
+        return map;
     }
 
-    public List<File> listFilesForFolder(final File folder) {
+    private List<File> listFilesForFolder(final File folder) {
         List<File> mapFiles = new ArrayList<>();
         for (final File fileEntry : folder.listFiles()) {
             if (!fileEntry.isDirectory()) {
-                log.info("Found map file: {}", fileEntry.getName());
+                log.info("Detected map file: {}", fileEntry.getName());
                 mapFiles.add(fileEntry);
             }
         }
