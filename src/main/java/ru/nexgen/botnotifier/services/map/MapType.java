@@ -16,4 +16,10 @@ public enum MapType {
     UNDERGROUND ("Подземелье");
 
     String name;
+
+
+    @Override
+    public String toString() {
+        return super.toString() + " [" + this.name + "]";
+    }
 }
