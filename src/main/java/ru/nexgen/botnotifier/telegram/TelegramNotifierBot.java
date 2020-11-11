@@ -29,6 +29,7 @@ public class TelegramNotifierBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         log.debug(update.toString());
+
         incomingTelegramMsgHandler.handle(update);
     }
 

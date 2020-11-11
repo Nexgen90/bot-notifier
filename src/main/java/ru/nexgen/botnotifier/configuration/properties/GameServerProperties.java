@@ -8,21 +8,14 @@ import org.springframework.validation.annotation.Validated;
 
 /**
  * Created by nikolay.mikutskiy
- * Date: 09.07.2020
+ * Date: 15.07.2020
  */
 @Data
 @Validated
 @Configuration
 @PropertySource("classpath:application.properties")
-@ConfigurationProperties(prefix = "telegram")
-public class TelegramProperties {
-
-    private String botToken;
-    private String botUserName;
-    private String chatId;
-
-    private boolean withProxy;
-    private String socksProxyHost;
-    private Integer socksProxyPort;
-
+@ConfigurationProperties(prefix = "game-server")
+public class GameServerProperties {
+    private String host;
+    private String port;
 }

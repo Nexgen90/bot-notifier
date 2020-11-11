@@ -6,23 +6,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
+
 /**
  * Created by nikolay.mikutskiy
- * Date: 09.07.2020
+ * Date: 15.07.2020
  */
 @Data
 @Validated
 @Configuration
 @PropertySource("classpath:application.properties")
-@ConfigurationProperties(prefix = "telegram")
-public class TelegramProperties {
-
-    private String botToken;
-    private String botUserName;
-    private String chatId;
-
-    private boolean withProxy;
-    private String socksProxyHost;
-    private Integer socksProxyPort;
-
+@ConfigurationProperties(prefix = "game-logic")
+public class GameLogicProperties {
+    private List<String> raidTimes;
 }

@@ -3,7 +3,9 @@ package ru.nexgen.botnotifier.services;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -75,5 +77,18 @@ public class TelegramSender implements MsgSender {
         }
     }
 
+    public void editInLineButton(Update update, String text) {
+        EditMessageText editMessage = new EditMessageText();
+        editMessage.enableHtml(true);
+        editMessage.setChatId(String.valueOf(update.getCallbackQuery().getMessage().getChatId()));
+        editMessage.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
+        editMessage.setText(text);
+
+        try {
+            bot.execute(editMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
