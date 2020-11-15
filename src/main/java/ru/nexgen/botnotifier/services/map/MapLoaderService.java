@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,20 +21,22 @@ import java.util.Map;
 @Slf4j
 @Service
 public class MapLoaderService {
-
     @Value("${game.map.mapsFolderPath:#{null}}")
     private String mapsFolderPath;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
     private List<File> files;
 
-    @PostConstruct
-    public void init() {
-        File folder = new File(mapsFolderPath);
-        files = listFilesForFolder(folder);
-    }
-
     public Map<Integer, Location> loadAndGetGameMap() {
         Map<Integer, Location> map = new HashMap<>();
+        log.info("Start loading game map");
+        File folder = new File(mapsFolderPath);
+        if (!folder.exists()) {
+            log.error("Can't load game map: folder {} does not exist!", mapsFolderPath);
+            return map;
+        }
+        files = listFilesForFolder(folder);
+
 
         files.forEach(f -> {
             try {
