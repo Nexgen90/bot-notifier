@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,29 +22,22 @@ import java.util.Map;
 @Slf4j
 @Service
 public class MapLoaderService {
-    @Value("${game.map.mapsFolderPath:#{null}}")
+    @Value("${game.map.mapsFolderPath:~/game/map}")
     private String mapsFolderPath;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private List<File> files;
 
     public Map<Integer, Location> loadAndGetGameMap() {
         Map<Integer, Location> map = new HashMap<>();
         log.info("Start loading game map");
-        File folder = new File(mapsFolderPath);
-        if (!folder.exists()) {
-            log.error("Can't load game map: folder {} does not exist!", mapsFolderPath);
-            return map;
-        }
-        files = listFilesForFolder(folder);
+        List<File> files = listFilesForFolder();
 
-
-        files.forEach(f -> {
+        files.forEach(file -> {
             try {
-                map.putAll(objectMapper.readValue(f, new TypeReference<HashMap<Integer, Location>>() {
+                map.putAll(objectMapper.readValue(file, new TypeReference<HashMap<Integer, Location>>() {
                 }));
             } catch (IOException e) {
-                log.error("Error while loading map files: {}", f.getName(), e);
+                log.error("Error while loading map files: {}", file.getName(), e);
             }
         });
 
@@ -51,7 +45,12 @@ public class MapLoaderService {
         return map;
     }
 
-    private List<File> listFilesForFolder(final File folder) {
+    private List<File> listFilesForFolder() {
+        File folder = new File(mapsFolderPath);
+        if (!folder.exists()) {
+            log.error("Can't load game map: folder {} does not exist!", mapsFolderPath);
+            return Collections.emptyList();
+        }
         List<File> mapFiles = new ArrayList<>();
         for (final File fileEntry : folder.listFiles()) {
             if (!fileEntry.isDirectory()) {
