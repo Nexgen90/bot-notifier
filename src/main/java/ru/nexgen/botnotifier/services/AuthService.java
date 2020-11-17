@@ -7,10 +7,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import ru.nexgen.botnotifier.configuration.properties.TelegramProperties;
 import ru.nexgen.botnotifier.mapper.Chat;
+import ru.nexgen.botnotifier.telegram.utils.UserNameExtractor;
 
 import java.time.ZonedDateTime;
-
-import static ru.nexgen.botnotifier.telegram.utils.UserNameExtractor.extractUserName;
 
 /**
  * Created by nikolay.mikutskiy
@@ -22,6 +21,7 @@ import static ru.nexgen.botnotifier.telegram.utils.UserNameExtractor.extractUser
 public class AuthService {
     private final TelegramProperties properties;
     private final DbService dbService;
+    private final UserNameExtractor userNameExtractor;
 
     public boolean isValid(Update update) {
         Chat chat = createOrGetChat(update);
@@ -50,9 +50,8 @@ public class AuthService {
                         .ifPresent(m -> dbService.getChatsMapper()
                                 .addChat(update.getMessage().getChatId(), update.getMessage().getChat().getTitle()));
             } else {
-                String userName = extractUserName(update);
-                dbService.getChatsMapper()
-                        .addChat(update.getMessage().getChatId(), userName);
+                String userName = userNameExtractor.extractUserName(update);
+                dbService.getChatsMapper().addChat(update.getMessage().getChatId(), userName);
             }
 
         }

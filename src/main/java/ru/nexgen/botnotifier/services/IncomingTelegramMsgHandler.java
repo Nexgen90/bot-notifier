@@ -16,7 +16,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class IncomingTelegramMsgHandler {
-    private final DbService dbService;
     private final AuthService authService;
     private final List<MessageHandler> msgHandlers;
 
