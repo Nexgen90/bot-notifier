@@ -12,6 +12,8 @@ import ru.nexgen.botnotifier.telegram.utils.UserNameExtractor;
 import java.time.ZonedDateTime;
 
 /**
+ * Manage and track users activity
+ *
  * Created by nikolay.mikutskiy
  * Date: 28.08.2020
  */
@@ -24,20 +26,15 @@ public class AuthService {
     private final UserNameExtractor userNameExtractor;
 
     public boolean isValid(Update update) {
-        Chat chat = createOrGetChat(update);
-
-        if (chat.getBanTime() != null) {
-            ZonedDateTime banTime = chat.getBanTime();
-            if (banTime.isAfter(ZonedDateTime.now(banTime.getZone()))) {
-                return false;
-            }
-        }
-
+        Chat chat = createOrGetChatFromDB(update);
         dbService.getChatsMapper().updateLastCallTime(chat.getChatId());
+        if (isOnBan(chat)) {
+            return false;
+        }
         return chat.isActive();
     }
 
-    private Chat createOrGetChat(Update update) {
+    private Chat createOrGetChatFromDB(Update update) {
         Chat chat = dbService.getChatsMapper().getChat(update.getMessage().getChatId());
         log.info("Chat from DB: {}", chat);
 
@@ -59,7 +56,7 @@ public class AuthService {
         if (chat != null && update.getMessage().getLeftChatMember() != null) {
             User leftChatMember = update.getMessage().getLeftChatMember();
             if ( properties.getBotUserName().equals(leftChatMember.getUserName()) ) {
-                dbService.getChatsMapper().removeChat(update.getMessage().getChatId());
+                dbService.getChatsMapper().setChatToInactive(update.getMessage().getChatId());
             }
         }
 
@@ -73,5 +70,13 @@ public class AuthService {
         }
 
         return dbService.getChatsMapper().getChat(update.getMessage().getChatId());
+    }
+
+    private boolean isOnBan(Chat chat) {
+        if (chat.getBanTime() != null) {
+            ZonedDateTime banTime = chat.getBanTime();
+            return banTime.isAfter(ZonedDateTime.now(banTime.getZone()));
+        }
+        return false;
     }
 }

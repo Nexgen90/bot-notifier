@@ -23,7 +23,7 @@ public interface ChatsMapper {
     Chat getChat(@Param("chatId") Long chatId);
 
     @Update("UPDATE chats_id SET is_active = false, stop_time = (now() at time zone 'Europe/Moscow') WHERE chat_id = #{chatId}")
-    void removeChat(@Param("chatId") Long chatId);
+    void setChatToInactive(@Param("chatId") Long chatId);
 
     @Update("UPDATE chats_id SET is_active = #{isActive} WHERE chat_id = #{chatId}")
     void updateChatStatus(@Param("chatId") Long chatId,
