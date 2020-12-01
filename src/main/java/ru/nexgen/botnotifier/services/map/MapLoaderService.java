@@ -2,9 +2,10 @@ package ru.nexgen.botnotifier.services.map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.nexgen.botnotifier.configuration.properties.GameLogicProperties;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,10 +22,9 @@ import java.util.Map;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class MapLoaderService {
-    @Value("${game.map.mapsFolderPath:~/game/map}")
-    private String mapsFolderPath;
-
+    private final GameLogicProperties properties;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public Map<Integer, Location> loadAndGetGameMap() {
@@ -46,9 +46,9 @@ public class MapLoaderService {
     }
 
     private List<File> listFilesForFolder() {
-        File folder = new File(mapsFolderPath);
+        File folder = new File(properties.getMapsFolderPath());
         if (!folder.exists()) {
-            log.error("Can't load game map: folder {} does not exist!", mapsFolderPath);
+            log.error("Can't load game map: folder {} does not exist!", properties.getMapsFolderPath());
             return Collections.emptyList();
         }
         List<File> mapFiles = new ArrayList<>();

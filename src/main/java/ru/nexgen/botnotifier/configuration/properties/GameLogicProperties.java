@@ -19,4 +19,5 @@ import java.util.List;
 @ConfigurationProperties(prefix = "game-logic")
 public class GameLogicProperties {
     private List<String> raidTimes;
+    private String mapsFolderPath;
 }
