@@ -30,6 +30,7 @@ public class IncomingTelegramMsgHandler {
 
         msgHandlers.stream()
                 .filter(m -> m.isValid(update))
-                .forEach(m -> m.handle(update));
+                .findFirst()
+                .ifPresent(m -> m.handle(update));
     }
 }

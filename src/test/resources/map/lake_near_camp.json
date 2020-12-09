@@ -1,0 +1,29 @@
+{
+  "4": {
+    "id": 4,
+    "type": "FOREST",
+    "code": "4 км",
+    "name": "Окрестности лагеря",
+    "smallMapImageId": "ASFASFDSA",
+    "fullMapImageId": "ASFASFDSA",
+    "nextLocationsId": [3, 5]
+  },
+  "5": {
+    "id": 5,
+    "type": "FOREST",
+    "code": "5 км",
+    "name": "Окрестности лагеря",
+    "smallMapImageId": "ASFASFDSA",
+    "fullMapImageId": "ASFASFDSA",
+    "nextLocationsId": [4, 6]
+  },
+  "6": {
+    "id": 6,
+    "type": "FOREST",
+    "code": "6 км",
+    "name": "Окрестности лагеря",
+    "smallMapImageId": "ASFASFDSA",
+    "fullMapImageId": "ASFASFDSA",
+    "nextLocationsId": [5]
+  }
+}

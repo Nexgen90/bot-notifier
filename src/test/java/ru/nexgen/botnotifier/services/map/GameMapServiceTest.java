@@ -23,8 +23,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = GameMapServiceTest.Config.class)
 class GameMapServiceTest {
-    private Map<Integer, Location> loadedMap = new HashMap<>();
-    private Location location1 = new Location(1, MapType.CITY, "some code", "some nema", "asf", "gds", new ArrayList<>());
+    private static final int LOCATION_ID = 1;
+    private Map<Integer, Location> loadedMap;
+    private Location someLocation = new Location(LOCATION_ID, MapType.CITY, "some code", "some nema", "asf", "gds", new ArrayList<>());
 
     @MockBean
     private MapLoaderService mapLoaderService;
@@ -34,7 +35,8 @@ class GameMapServiceTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        loadedMap.put(1, location1);
+        loadedMap = new HashMap<>();
+        loadedMap.put(LOCATION_ID, someLocation);
         when(mapLoaderService.loadAndGetGameMap())
                 .thenReturn(loadedMap);
         Method postConstruct = GameMapService.class.getDeclaredMethod("init", null);
@@ -45,8 +47,8 @@ class GameMapServiceTest {
     @Test
     @DisplayName("Should Get Exist Location By Id")
     void shouldGetExistLocationById() {
-        Location location = gameMapService.getLocationById(location1.getId());
-        assertThat(location, equalTo(location1));
+        Location location = gameMapService.getLocationById(LOCATION_ID);
+        assertThat(location, equalTo(someLocation));
     }
 
     @Test

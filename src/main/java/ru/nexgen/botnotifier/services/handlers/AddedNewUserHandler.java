@@ -21,6 +21,7 @@ public class AddedNewUserHandler implements MessageHandler {
 
     @Override
     public boolean isValid(Update receivedMessage) {
+        log.debug("Start AddedNewUserHandler isValid check");
         return receivedMessage.hasMessage()
                 && receivedMessage.getMessage().getNewChatMembers() != null
                 && receivedMessage.getMessage().getNewChatMembers().size() > 0;
@@ -28,6 +29,7 @@ public class AddedNewUserHandler implements MessageHandler {
 
     @Override
     public void handle(Update receivedMessage) {
+        log.info("Start AddedNewUserHandler handle process");
         for (User newChatMember : receivedMessage.getMessage().getNewChatMembers()) {
             if (newChatMember.getBot()) {
                 log.info("New bot {} is added in group {}", newChatMember.getId(), receivedMessage.getMessage().getChatId());
