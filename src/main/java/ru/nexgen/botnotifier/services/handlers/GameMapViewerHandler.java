@@ -21,12 +21,14 @@ public class GameMapViewerHandler implements MessageHandler {
 
     @Override
     public boolean isValid(Update receivedMessage) {
+        log.debug("Start GameMapViewerHandler isValid check");
         return receivedMessage.hasMessage() && receivedMessage.getMessage().hasText()
                 && receivedMessage.getMessage().getText().toUpperCase().startsWith(GET_LOCATION_PREFFIX);
     }
 
     @Override
     public void handle(Update receivedMessage) {
+        log.info("Start GameMapViewerHandler handle process");
         int locationId = Integer.parseInt(receivedMessage.getMessage().getText().substring(GET_LOCATION_PREFFIX.length()));
         msgSender.send("Loaded game map: " + mapService.getLocationById(locationId), receivedMessage.getMessage().getChatId());
     }

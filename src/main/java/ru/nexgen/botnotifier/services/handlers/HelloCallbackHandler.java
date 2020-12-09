@@ -20,12 +20,14 @@ public class HelloCallbackHandler implements MessageHandler {
 
     @Override
     public boolean isValid(Update receivedMessage) {
+        log.debug("Start HelloCallbackHandler isValid check");
         return receivedMessage.hasCallbackQuery()
                 && receivedMessage.getCallbackQuery().getData().startsWith(HELLO_PREFIX);
     }
 
     @Override
     public void handle(Update receivedMessage) {
+        log.info("Start HelloCallbackHandler handle process");
         String playerCommand = receivedMessage.getCallbackQuery().getData();
         log.info("Received player " + receivedMessage.getCallbackQuery().getFrom().getId() + " callback: " + playerCommand);
 

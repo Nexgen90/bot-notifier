@@ -27,33 +27,36 @@ public class CommonGameEventsController {
 
     /**
      * Пример вызова:
-     * curl -i -X POST localhost:8080/push/notification -d '{"text": "Рейд-босс на 6км убит!"}' --header 'Content-Type: application/json'
+     * curl -i -X POST localhost:8080/push/notification
+     * -d '{"text": "Рейд-босс на 6км убит!"}' --header 'Content-Type: application/json'
      */
     @PostMapping(value = "/push/notification")
     public void pushNotification(@RequestBody PushNotifyRq request) {
-        log.info("Get post-request: {}", request);
+        log.info("Received post-request: {}", request);
 
         dbService.getChatsMapper().getAllActiveChatIds().forEach(id -> msgSender.send(request.getText(), id));
     }
 
     /**
      * Пример вызова:
-     * curl -i -X POST localhost:8080/push/notification/template/1 -d '{"locationName": "2км", "clanName": "Тестовый Клан"}' --header 'Content-Type: application/json'
+     * curl -i -X POST localhost:8080/push/notification/template/captured_railway_station
+     * -d '{"locationName": "2км", "clanName": "Тестовый Клан"}' --header 'Content-Type: application/json'
      */
-    @PostMapping(value = "/push/notification/template/{templateId}")
-    public void pushTemplateNotification(@PathVariable Integer templateId,
+    @PostMapping(value = "/push/notification/template/{templateName}")
+    public void pushTemplateNotification(@PathVariable String templateName,
                                          @RequestBody Map<String, String> parameters) {
-        log.info("Get post-request: {}", parameters);
+        log.info("Received post-request: templateName={}, parameters={}", templateName, parameters);
 
         dbService.getChatsMapper().getAllActiveChatIds().forEach(id ->
-                msgSender.send(templatesService.fillTemplate(templateId, parameters), id));
+                msgSender.send(templatesService.fillTemplate(templateName, parameters), id));
     }
 
     @PostMapping(value = "/ban/chat/{id}/minutes/5")
     public String addBanTime(@PathVariable Long id) {
-        log.info("Get post-request /ban/chat/{}/minutes/5", id);
+        log.info("Received post-request /ban/chat/{}/minutes/5", id);
 
         dbService.getChatsMapper().updateBanTime(id);
         return "OK";
     }
+
 }
